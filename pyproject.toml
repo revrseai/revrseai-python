@@ -20,5 +20,5 @@ packages = ["revrseai"]
 
 [project.urls]
 Homepage = "https://revrse.ai"
-Repository = "https://..."
-Issues = "https://..."
+Repository = "https://github.com/revrseai/revrseai-python"
+Issues = "https://github.com/revrseai/revrseai-python/issues"
