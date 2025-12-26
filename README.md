@@ -6,6 +6,15 @@ The RevrseAI Python library provides convenient access to the RevrseAI API from
 applications written in Python. It allows you to generate APIs for any Android
 app using natural language and execute those APIs programmatically.
 
+## Getting an API Key
+
+To use this library, you'll need an API key:
+
+1. Go to [https://revrse.ai](https://revrse.ai)
+2. Login or sign up for an account
+3. Navigate to the Settings page
+4. Generate your API key
+
 ## Installation
 
 ```sh
