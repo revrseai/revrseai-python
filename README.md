@@ -2,9 +2,9 @@
 
 [![pypi](https://img.shields.io/badge/pypi-v0.1.0-blue.svg)](https://pypi.python.org/pypi/revrseai-python)
 
-The RevrseAI Python library provides convenient access to the RevrseAI API from
-applications written in Python. It allows you to generate APIs for any Android
-app using natural language and execute those APIs programmatically.
+Python SDK for RevrseAI. Generate APIs for any Android app using a single prompt. Extract data, automate tasks, and build integrations without an emulator.
+
+Generated endpoints are deterministic and don't use an LLM or emulator at execution time, making it extremely fast, cheap and stable.
 
 ## Getting an API Key
 
@@ -28,7 +28,7 @@ pip install revrseai-python
 ## Usage
 
 The library needs to be configured with your account's API key which is
-available in your RevrseAI Dashboard. Set it directly or use the `REVRSE_AI_API_KEY`
+available in your RevrseAI settings page. Set it directly or use the `REVRSE_AI_API_KEY`
 environment variable:
 
 ```python
