@@ -260,8 +260,7 @@ class RevrseAI:
         Returns:
             An Info object containing app details and a list of available endpoints.
         """
-        info = Info.model_validate(self._request(
-            "/api/info", params={"query": query}))
+        info = Info.model_validate(self._request("/api/info", params={"query": query}))
         for endpoint in info.endpoints:
             endpoint._client = self
         return info
