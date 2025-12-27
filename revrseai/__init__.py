@@ -1,11 +1,25 @@
 from .client import RevrseAI
 from .exceptions import (
-    RevrseAIError,
+    APIError,
     AuthenticationError,
     AuthorizationError,
     NotFoundError,
-    ValidationError,
     RateLimitError,
+    RevrseAIError,
     ServerError,
-    APIError,
+    ValidationError,
 )
+
+__version__ = "0.1.0"
+__all__ = [
+    "RevrseAI",
+    "RevrseAIError",
+    "AuthenticationError",
+    "AuthorizationError",
+    "NotFoundError",
+    "ValidationError",
+    "RateLimitError",
+    "ServerError",
+    "APIError",
+    "__version__",
+]

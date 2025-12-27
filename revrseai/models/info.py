@@ -1,5 +1,3 @@
-from typing import Optional
-
 from pydantic import BaseModel, Field
 
 from .endpoint import Endpoint
@@ -9,21 +7,15 @@ class Info(BaseModel):
     """Response model for the info route."""
 
     app_name: str = Field(..., description="The name of the app")
-    app_image_url: Optional[str] = Field(
-        default=None,
-        description="URL to the app's image"
+    app_image_url: str | None = Field(
+        default=None, description="URL to the app's image"
     )
-    app_description: Optional[str] = Field(
-        default=None,
-        description="Description of the app"
+    app_description: str | None = Field(
+        default=None, description="Description of the app"
     )
-    app_title: Optional[str] = Field(
-        default=None,
-        description="Title of the app"
-    )
+    app_title: str | None = Field(default=None, description="Title of the app")
     endpoints: list[Endpoint] = Field(
-        default_factory=list,
-        description="List of available endpoints"
+        default_factory=list, description="List of available endpoints"
     )
 
     def make_markdown_documentation(self) -> str:

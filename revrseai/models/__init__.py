@@ -1,9 +1,16 @@
-from .task import Task, TaskDetailed
-from .message import Message
 from .endpoint import Endpoint
+from .info import Info
+from .message import Message
 from .response import Response
 from .schema import SchemaObject
-from .info import Info
+from .task import Task, TaskDetailed
 
-__all__ = ["Task", "TaskDetailed", "Message",
-           "Endpoint", "Response", "SchemaObject", "Info"]
+__all__ = [
+    "Task",
+    "TaskDetailed",
+    "Message",
+    "Endpoint",
+    "Response",
+    "SchemaObject",
+    "Info",
+]

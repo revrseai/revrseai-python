@@ -1,12 +1,13 @@
+import time
+from datetime import datetime
 from enum import Enum
 from typing import TYPE_CHECKING
+from uuid import UUID
 
 from pydantic import BaseModel, Field, PrivateAttr
-from uuid import UUID
-from datetime import datetime
-import time
-from .message import Message
+
 from .endpoint import Endpoint
+from .message import Message
 
 if TYPE_CHECKING:
     from revrseai.client import RevrseAI
@@ -23,17 +24,16 @@ class TaskStage(str, Enum):
 
 
 class Task(BaseModel):
-
-    _client: "RevrseAI" = PrivateAttr(default=None)
+    _client: "RevrseAI | None" = PrivateAttr(default=None)
 
     id: UUID = Field(..., description="The unique identifier for the task")
     title: str = Field(..., description="The title of the task")
     description: str = Field(..., description="The description of the task")
-    current_action: str = Field(...,
-                                description="The current action of the task")
+    current_action: str = Field(..., description="The current action of the task")
     task_stage: TaskStage = Field(..., description="The stage of the task")
-    created_at: datetime = Field(...,
-                                 description="The timestamp when the task was created")
+    created_at: datetime = Field(
+        ..., description="The timestamp when the task was created"
+    )
 
     def update(self) -> "Task":
         """Fetch fresh task data and update all fields."""
@@ -59,10 +59,8 @@ class Task(BaseModel):
 
 
 class TaskDetailed(Task):
-    messages: list[Message] = Field(...,
-                                    description="The messages for the task")
-    endpoints: list[Endpoint] = Field(...,
-                                      description="The endpoints for the task")
+    messages: list[Message] = Field(..., description="The messages for the task")
+    endpoints: list[Endpoint] = Field(..., description="The endpoints for the task")
 
     def update(self) -> "TaskDetailed":
         """Fetch fresh task data and update all fields."""

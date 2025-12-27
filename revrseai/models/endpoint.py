@@ -1,7 +1,8 @@
 import json
-from typing import Any, Optional, TYPE_CHECKING
-from pydantic import BaseModel, Field, PrivateAttr, field_validator
+from typing import TYPE_CHECKING, Any
 from uuid import UUID
+
+from pydantic import BaseModel, Field, PrivateAttr, field_validator
 
 from .response import Response
 from .schema import SchemaObject
@@ -13,15 +14,12 @@ if TYPE_CHECKING:
 class Endpoint(BaseModel):
     """Information about an API endpoint."""
 
-    _client: "RevrseAI" = PrivateAttr(default=None)
+    _client: "RevrseAI | None" = PrivateAttr(default=None)
 
     id: UUID = Field(..., description="The unique identifier for the endpoint")
-    name: str = Field(
-        description="The name of the endpoint"
-    )
-    description: Optional[str] = Field(
-        default=None,
-        description="Description of what this endpoint does"
+    name: str = Field(description="The name of the endpoint")
+    description: str | None = Field(
+        default=None, description="Description of what this endpoint does"
     )
     input_schema: SchemaObject = Field(
         description="JSON schema for the input parameters"
@@ -35,18 +33,20 @@ class Endpoint(BaseModel):
     def parse_schema(cls, v: Any) -> SchemaObject:
         if isinstance(v, dict):
             return SchemaObject.from_dict(v)
+        if not isinstance(v, SchemaObject):
+            raise ValueError(f"Expected dict or SchemaObject, got {type(v)}")
         return v
 
-    def execute(self, data: dict | None = None) -> Response:
+    def execute(self, data: dict[str, Any] | None = None) -> Response:
         if self._client is None:
             raise ValueError("Client not set. Cannot execute endpoint.")
         return self._client.execute_from_endpoint_id(str(self.id), data=data)
 
-    def example_data(self) -> dict:
-        return self.input_schema.example_data()
+    def example_data(self) -> dict[str, Any]:
+        return dict(self.input_schema.example_data())
 
-    def example_response(self) -> dict:
-        return self.output_schema.example_data()
+    def example_response(self) -> dict[str, Any]:
+        return dict(self.output_schema.example_data())
 
     def make_markdown_documentation(self) -> str:
         lines = [f"# {self.name}", ""]

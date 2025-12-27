@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any
 
 
 @dataclass
@@ -15,20 +15,20 @@ class SchemaObject:
     """
 
     # Common fields
-    type: Optional[str] = None
-    format: Optional[str] = None
-    description: Optional[str] = None
-    title: Optional[str] = None
+    type: str | None = None
+    format: str | None = None
+    description: str | None = None
+    title: str | None = None
     nullable: bool = False
-    enum: Optional[list[Any]] = None
-    example: Optional[Any] = None
+    enum: list[Any] | None = None
+    example: Any | None = None
 
     # Object fields
-    properties: dict[str, "SchemaObject"] = field(default_factory=dict)
+    properties: dict[str, SchemaObject] = field(default_factory=dict)
     required: list[str] = field(default_factory=list)
 
     # Array fields
-    items: Optional["SchemaObject"] = None
+    items: SchemaObject | None = None
 
     # Escape hatch for additional/arbitrary properties
     _extra: dict[str, Any] = field(default_factory=dict)
@@ -68,14 +68,15 @@ class SchemaObject:
         return result
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "SchemaObject":
+    def from_dict(cls, data: dict[str, Any]) -> SchemaObject:
         """Create from dictionary."""
         # Extract known fields
         properties = {}
         if "properties" in data:
             for name, prop_data in data["properties"].items():
-                properties[name] = cls.from_dict(
-                    prop_data) if isinstance(prop_data, dict) else cls()
+                properties[name] = (
+                    cls.from_dict(prop_data) if isinstance(prop_data, dict) else cls()
+                )
 
         items = None
         if "items" in data and isinstance(data["items"], dict):
@@ -83,8 +84,16 @@ class SchemaObject:
 
         # Collect extra fields not explicitly handled
         known_fields = {
-            "type", "format", "description", "title", "nullable",
-            "enum", "example", "properties", "required", "items"
+            "type",
+            "format",
+            "description",
+            "title",
+            "nullable",
+            "enum",
+            "example",
+            "properties",
+            "required",
+            "items",
         }
         extra = {k: v for k, v in data.items() if k not in known_fields}
 
@@ -143,7 +152,7 @@ class SchemaObject:
             type_str = f"{type_str}?"
         return type_str
 
-    def to_markdown_table(self, required_fields: Optional[list[str]] = None) -> str:
+    def to_markdown_table(self, required_fields: list[str] | None = None) -> str:
         """Generate a markdown table from schema properties."""
         if not self.properties:
             return "_No fields_"
