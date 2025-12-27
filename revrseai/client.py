@@ -35,7 +35,8 @@ class RevrseAI:
                 will attempt to read from the REVRSE_AI_API_KEY environment variable.
 
         Raises:
-            ValueError: If no API key is provided and none is found in environment variables.
+            ValueError: If no API key is provided and none is found in
+                environment variables.
         """
         self.api_key = api_key or os.getenv("REVRSE_AI_API_KEY")
         if not self.api_key:
@@ -53,7 +54,7 @@ class RevrseAI:
         Args:
             endpoint: The API endpoint path (e.g., "/api/tasks").
             data: Optional JSON body data for POST requests.
-            method: HTTP method to use. Defaults to POST if data is provided, GET otherwise.
+            method: HTTP method. Defaults to POST if data provided, GET otherwise.
             params: Optional query parameters.
 
         Returns:
@@ -154,7 +155,7 @@ class RevrseAI:
     def generate(self, task: str, secrets: dict[str, Any] | None = None) -> Task:
         """Generate a new task from a natural language description.
 
-        This initiates the AI-powered API generation process, which explores 
+        This initiates the AI-powered API generation process, which explores
         the app and builds the necessary API endpoints to accomplish the task.
 
         Args:
