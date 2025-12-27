@@ -73,3 +73,10 @@ dev = [
     "ruff>=0.14.10",
     "types-requests>=2.32.4.20250913",
 ]
+
+[tool.hatch.envs.default.scripts]
+lint = "ruff check ."
+fix = "ruff check . --fix"
+format = "ruff format ."
+typecheck = "mypy revrseai"
+check = ["lint", "typecheck"]
