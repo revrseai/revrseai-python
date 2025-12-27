@@ -29,7 +29,8 @@ class Task(BaseModel):
     id: UUID = Field(..., description="The unique identifier for the task")
     title: str = Field(..., description="The title of the task")
     description: str = Field(..., description="The description of the task")
-    current_action: str = Field(..., description="The current action of the task")
+    current_action: str = Field(...,
+                                description="The current action of the task")
     task_stage: TaskStage = Field(..., description="The stage of the task")
     created_at: datetime = Field(
         ..., description="The timestamp when the task was created"
@@ -59,8 +60,10 @@ class Task(BaseModel):
 
 
 class TaskDetailed(Task):
-    messages: list[Message] = Field(..., description="The messages for the task")
-    endpoints: list[Endpoint] = Field(..., description="The endpoints for the task")
+    messages: list[Message] = Field(...,
+                                    description="The messages for the task")
+    endpoints: list[Endpoint] = Field(...,
+                                      description="The endpoints for the task")
 
     def update(self) -> "TaskDetailed":
         """Fetch fresh task data and update all fields."""
@@ -74,6 +77,11 @@ class TaskDetailed(Task):
         return self
 
     def make_markdown_documentation(self) -> str:
+        """Generate markdown documentation for the task and all its API endpoints.
+
+        Returns:
+            A formatted markdown string documenting the task and its API endpoints.
+        """
         lines = [f"# {self.title}", ""]
 
         if self.description:
@@ -88,8 +96,14 @@ class TaskDetailed(Task):
         return "\n".join(lines)
 
     def print_markdown_documentation(self) -> None:
+        """Print the task's markdown documentation to stdout."""
         print(self.make_markdown_documentation())
 
     def export_markdown_documentation(self, filename: str) -> None:
+        """Export the task's markdown documentation to a file.
+
+        Args:
+            filename: The path to the file where documentation will be written.
+        """
         with open(filename, "w", encoding="utf-8") as f:
             f.write(self.make_markdown_documentation())

@@ -19,6 +19,11 @@ class Info(BaseModel):
     )
 
     def make_markdown_documentation(self) -> str:
+        """Generate markdown documentation for the app and all its API endpoints.
+
+        Returns:
+            A formatted markdown string documenting the app and its API endpoints.
+        """
         lines = [f"# {self.app_title or self.app_name}", ""]
 
         lines.extend(["## Endpoints", ""])
@@ -30,8 +35,14 @@ class Info(BaseModel):
         return "\n".join(lines)
 
     def print_markdown_documentation(self) -> None:
+        """Print the app's markdown documentation to stdout."""
         print(self.make_markdown_documentation())
 
     def export_markdown_documentation(self, filename: str) -> None:
+        """Export the app's markdown documentation to a file.
+
+        Args:
+            filename: The path to the file where documentation will be written.
+        """
         with open(filename, "w", encoding="utf-8") as f:
             f.write(self.make_markdown_documentation())

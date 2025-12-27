@@ -18,7 +18,25 @@ _BASE_URL = "https://api.revrse.ai"
 
 
 class RevrseAI:
+    """Client for interacting with the RevrseAI API.
+
+    This client provides methods to generate, execute, and manage tasks
+    through the RevrseAI platform.
+
+    Attributes:
+        api_key: The API key used for authentication.
+    """
+
     def __init__(self, api_key: str | None = None):
+        """Initialize the RevrseAI client.
+
+        Args:
+            api_key: The API key for authentication. If not provided,
+                will attempt to read from the REVRSE_AI_API_KEY environment variable.
+
+        Raises:
+            ValueError: If no API key is provided and none is found in environment variables.
+        """
         self.api_key = api_key or os.getenv("REVRSE_AI_API_KEY")
         if not self.api_key:
             raise ValueError("API key is required")
@@ -30,6 +48,26 @@ class RevrseAI:
         method: str | None = None,
         params: dict[str, Any] | None = None,
     ) -> Any:
+        """Make an HTTP request to the RevrseAI API.
+
+        Args:
+            endpoint: The API endpoint path (e.g., "/api/tasks").
+            data: Optional JSON body data for POST requests.
+            method: HTTP method to use. Defaults to POST if data is provided, GET otherwise.
+            params: Optional query parameters.
+
+        Returns:
+            The JSON response from the API.
+
+        Raises:
+            AuthenticationError: If authentication fails (401).
+            AuthorizationError: If access is denied (403).
+            NotFoundError: If the resource is not found (404).
+            ValidationError: If request validation fails (422).
+            RateLimitError: If rate limit is exceeded (429).
+            ServerError: If a server error occurs (5xx).
+            APIError: For other API errors.
+        """
         url = f"{_BASE_URL}{endpoint}"
         headers = {"X-API-Key": self.api_key}
         method = method or ("POST" if data else "GET")
@@ -68,9 +106,23 @@ class RevrseAI:
             raise APIError(detail, status_code, detail)
 
     def get_tasks(self) -> list[Task]:
+        """Retrieve all tasks associated with the authenticated user.
+
+        Returns:
+            A list of Task objects representing all available tasks.
+        """
         return [Task.model_validate(t) for t in self._request("/api/tasks")]
 
     def get_task(self, task_id: str) -> TaskDetailed:
+        """Retrieve a task with full details including messages and endpoints.
+
+        Args:
+            task_id: The unique identifier of the task to retrieve.
+
+        Returns:
+            A TaskDetailed object containing the task with all associated
+            messages and endpoints.
+        """
         response = self._request(
             f"/api/tasks/{task_id}", params={"include_details": True}
         )
@@ -81,6 +133,17 @@ class RevrseAI:
         return task
 
     def get_task_basic(self, task_id: str) -> Task:
+        """Retrieve a task without detailed information.
+
+        This is a lighter-weight alternative to get_task() when you don't
+        need the full task details like messages and endpoints.
+
+        Args:
+            task_id: The unique identifier of the task to retrieve.
+
+        Returns:
+            A Task object containing basic task information.
+        """
         response = self._request(
             f"/api/tasks/{task_id}", params={"include_details": False}
         )
@@ -89,6 +152,20 @@ class RevrseAI:
         return task
 
     def generate(self, task: str, secrets: dict[str, Any] | None = None) -> Task:
+        """Generate a new task from a natural language description.
+
+        This initiates the AI-powered API generation process, which explores 
+        the app and builds the necessary API endpoints to accomplish the task.
+
+        Args:
+            task: A natural language description of what you want to accomplish.
+            secrets: Optional dictionary of secrets (e.g., passwords) needed
+                for the task execution.
+
+        Returns:
+            A Task object representing the newly created task. Use wait_till_done()
+            to wait for generation to complete.
+        """
         result = Task.model_validate(
             self._request("/generate", data={"task": task, "secrets": secrets})
         )
@@ -103,6 +180,28 @@ class RevrseAI:
         endpoint: str | None = None,
         data: dict[str, Any] | None = None,
     ) -> Response:
+        """Execute an API endpoint with the provided data.
+
+        This is a unified method for executing endpoints. You can specify
+        the target endpoint using one of three approaches:
+        - By app name and endpoint name
+        - By task_id and endpoint name
+        - By endpoint_id directly
+
+        Args:
+            app: The name of the app to execute against.
+            task_id: The task ID containing the endpoint to execute.
+            endpoint_id: The direct endpoint ID to execute.
+            endpoint: The endpoint name (required when using app or task_id).
+            data: Optional input data to pass to the endpoint.
+
+        Returns:
+            A Response object containing the execution result.
+
+        Raises:
+            ValueError: If neither app, task_id, nor endpoint_id is provided,
+                or if endpoint is missing when using task_id.
+        """
         if app is None and task_id is None and endpoint_id is None:
             raise ValueError("Either app, task_id, or endpoint_id is required")
         if endpoint_id is not None:
@@ -121,6 +220,16 @@ class RevrseAI:
     def execute_from_task_id(
         self, task_id: str, endpoint: str, data: dict[str, Any] | None = None
     ) -> Response:
+        """Execute an endpoint by task ID and endpoint name.
+
+        Args:
+            task_id: The unique identifier of the task.
+            endpoint: The name of the endpoint to execute within the task.
+            data: Optional input data to pass to the endpoint.
+
+        Returns:
+            A Response object containing the execution result.
+        """
         return Response.model_validate(
             self._request(f"/execute/{task_id}/{endpoint}", data=data)
         )
@@ -128,11 +237,28 @@ class RevrseAI:
     def execute_from_endpoint_id(
         self, endpoint_id: str, data: dict[str, Any] | None = None
     ) -> Response:
+        """Execute an endpoint directly by its unique ID.
+
+        Args:
+            endpoint_id: The unique identifier of the endpoint to execute.
+            data: Optional input data to pass to the endpoint.
+
+        Returns:
+            A Response object containing the execution result.
+        """
         return Response.model_validate(
             self._request(f"/execute/{endpoint_id}", data=data)
         )
 
     def info(self, query: str) -> Info:
+        """Retrieve information about an app and its available endpoints.
+
+        Args:
+            query: The app name or search query to look up.
+
+        Returns:
+            An Info object containing app details and a list of available endpoints.
+        """
         info = Info.model_validate(self._request(
             "/api/info", params={"query": query}))
         for endpoint in info.endpoints:
