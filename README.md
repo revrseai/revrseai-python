@@ -2,9 +2,7 @@
 
 [![pypi](https://img.shields.io/badge/pypi-v0.1.0-blue.svg)](https://pypi.python.org/pypi/revrseai-python)
 
-A Python client library for interacting with the RevrseAI API. Generate APIs for any Android app using a single prompt. Extract data, automate tasks, and build integrations without an emulator.
-
-Generated endpoints are deterministic and don't use an LLM or emulator at execution time, making it extremely fast, cheap and stable.
+A Python client library for interacting with the RevrseAI API. Generate APIs for any Android app using a single prompt — extract data, automate tasks, and build integrations without an emulator. Generated endpoints are deterministic and don't rely on an LLM or emulator at execution time, making them extremely fast, cheap, and stable.
 
 ## Getting an API Key
 
