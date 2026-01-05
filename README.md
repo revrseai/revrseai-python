@@ -114,7 +114,7 @@ result = endpoint.execute(data={"key": "value"})
 Export generated API documentation to a file:
 
 ```python
-task = client.generate("Instructions in plain English to perform the task")
+task = client.generate("Instructions in plain English for performing the task")
 result = task.wait_till_done()
 
 # Export to markdown file
