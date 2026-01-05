@@ -32,7 +32,7 @@ environment variable:
 ```python
 from revrseai import RevrseAI
 
-client = RevrseAI("your_api_key")
+client = RevrseAI("YOUR_API_KEY")
 ```
 
 ### Generate an API
@@ -42,7 +42,7 @@ Generate an API for any Android app by describing what you want to do:
 ```python
 from revrseai import RevrseAI
 
-client = RevrseAI("your_api_key")
+client = RevrseAI("YOUR_API_KEY")
 
 task = client.generate(
     "Log into Job Today and get the jobs on my feed",
